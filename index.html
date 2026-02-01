@@ -93,7 +93,8 @@ let progress = 0;
 
 function getInitial() {
   const params = new URLSearchParams(window.location.search);
-  return Math.min(100, Math.max(0, parseInt(params.get("value")) || 0));
+  const val = parseInt(params.get("value"));
+  return isNaN(val) ? 0 : Math.min(100, Math.max(0, val));
 }
 
 function update() {
@@ -109,10 +110,12 @@ function change(step) {
 }
 
 window.onload = () => {
-  progress = parseInt(localStorage.getItem("thermoProgress")) ?? getInitial();
+  const saved = parseInt(localStorage.getItem("thermoProgress"));
+  progress = isNaN(saved) ? getInitial() : saved;
   update();
 };
 </script>
+
 
 </body>
 </html>
