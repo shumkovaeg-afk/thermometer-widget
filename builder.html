@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Конструктор индикатора "Самовар"</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  font-family: Arial, sans-serif;
+  padding:20px;
+  background:#f5f7fa;
+}
+
+h1{margin-bottom:10px;}
+
+.panel{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  max-width:500px;
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  font-weight:bold;
+}
+
+input, select{
+  width:100%;
+  padding:6px;
+  margin-top:4px;
+}
+
+.preview{
+  margin-top:20px;
+  padding:10px;
+  background:#fff;
+  border-radius:10px;
+  text-align:center;
+}
+
+iframe{
+  border:none;
+}
+
+.output{
+  margin-top:15px;
+  background:#222;
+  color:#0f0;
+  padding:10px;
+  font-family:monospace;
+  word-break:break-all;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🫖 Конструктор самовара прогресса</h1>
+
+<div class="panel">
+
+<label>Шаг увеличения (%)</label>
+<input type="number" id="step" value="10">
+
+<label>Максимум (например 100)</label>
+<input type="number" id="max" value="100">
+
+<label>Цвет воды</label>
+<input type="color" id="color" value="#ff7b00">
+
+<label>Подпись под индикатором</label>
+<input type="text" id="label" value="Самовар нагревается">
+
+</div>
+
+<div class="preview">
+  <h3>Предпросмотр</h3>
+  <iframe id="previewFrame" width="220" height="420"></iframe>
+</div>
+
+<div class="output" id="output"></div>
+
+<script>
+const stepInput = document.getElementById("step");
+const maxInput = document.getElementById("max");
+const colorInput = document.getElementById("color");
+const labelInput = document.getElementById("label");
+const frame = document.getElementById("previewFrame");
+const output = document.getElementById("output");
+
+function updatePreview(){
+  const step = stepInput.value;
+  const max = maxInput.value;
+  const color = encodeURIComponent(colorInput.value);
+  const label = encodeURIComponent(labelInput.value);
+
+  const base = window.location.origin + window.location.pathname.replace("builder.html","index.html");
+  const url = `${base}?step=${step}&max=${max}&color=${color}&label=${label}`;
+
+  frame.src = url;
+
+  output.textContent = `<iframe src="${url}" width="220" height="420" style="border:none;"></iframe>`;
+}
+
+document.querySelectorAll("input").forEach(el => {
+  el.addEventListener("input", updatePreview);
+});
+
+updatePreview();
+</script>
+
+</body>
+</html>
