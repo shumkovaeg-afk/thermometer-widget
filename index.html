@@ -65,23 +65,45 @@
     <div class="bulb" id="bulb">0%</div>
   </div>
 
-  <script>
-    function getProgressFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      let value = parseInt(params.get("value")) || 0;
-      return Math.min(100, Math.max(0, value));
-    }
+ <script>
+  let progress = 0;
+  const STEP = 10; // на сколько меняется прогресс
 
-    function setProgress(value) {
-      const fill = document.getElementById("fill");
-      const bulb = document.getElementById("bulb");
-      fill.style.height = value + "%";
-      fill.textContent = value + "%";
-      bulb.textContent = value + "%";
-    }
+  function getProgressFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    let value = parseInt(params.get("value")) || 0;
+    return Math.min(100, Math.max(0, value));
+  }
 
-    const progress = getProgressFromURL();
-    setTimeout(() => setProgress(progress), 300);
-  </script>
+  function setProgress(value) {
+    progress = Math.min(100, Math.max(0, value));
+    const fill = document.getElementById("fill");
+    const bulb = document.getElementById("bulb");
+    fill.style.height = progress + "%";
+    fill.textContent = progress + "%";
+    bulb.textContent = progress + "%";
+  }
+
+  function increase() {
+    setProgress(progress + STEP);
+  }
+
+  function decrease() {
+    setProgress(progress - STEP);
+  }
+
+  // 🔹 слушаем команды из Genially
+  window.addEventListener("message", (event) => {
+    if (!event.data) return;
+
+    if (event.data.type === "increase") increase();
+    if (event.data.type === "decrease") decrease();
+    if (event.data.type === "set") setProgress(event.data.value);
+  });
+
+  // стартовое значение
+  setTimeout(() => setProgress(getProgressFromURL()), 300);
+</script>
+
 </body>
 </html>
